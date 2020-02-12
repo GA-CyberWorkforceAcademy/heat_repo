@@ -183,6 +183,12 @@ resources:
       network: { get_resource: green_net }
       fixed_ips:
         - ip_address: 10.221.0.10
+  traffic_gen_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.235      
 
 ## 1.2 DMZ Network
   white_net:
@@ -358,6 +364,19 @@ resources:
             $username: { get_param: username }
             $userpass: { get_param: userpass }
             $sopass: { get_param: sopass }
+  traffic_gen:
+    type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
+    properties:
+      name: traffic_gen
+      flavor: cy.medium
+      networks:
+        - port: { get_resource: traffic_gen_port }
+      image: "Debian Buster"
+      config_drive: true
+      user_data_format: RAW
+      user_data: { get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/generate.sh"}
+  
 
   traffic_generators:
     type: OS::Heat::ResourceGroup
