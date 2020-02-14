@@ -599,7 +599,6 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_1_port }
-        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -622,7 +621,6 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_2_port }
-        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -646,7 +644,6 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_3_port }
-        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -673,7 +670,6 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_4_port }
-        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -696,7 +692,6 @@ resources:
       flavor: hack.massive
       networks:
         - network: { get_resource: red_net }
-        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
