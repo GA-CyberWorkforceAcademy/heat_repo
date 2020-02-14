@@ -692,6 +692,7 @@ resources:
       flavor: hack.massive
       networks:
         - network: { get_resource: red_net }
+        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
