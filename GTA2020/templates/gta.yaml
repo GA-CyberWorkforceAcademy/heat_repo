@@ -228,7 +228,7 @@ resources:
       cidr: 200.0.0.0/5
       dns_nameservers:
         - 10.101.255.254
-      gateway_ip: 207.255.255.254
+      host_routes: [{"nexthop": 207.255.255.254, "destination": 10.192.0.0/10}]
   red_gateway_port:
     type: OS::Neutron::Port
     properties:
@@ -599,6 +599,7 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_1_port }
+        - network: { get_resource: public }
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -621,6 +622,7 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_2_port }
+        - network: { get_resource: public }
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -644,6 +646,7 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_3_port }
+        - network: { get_resource: public }
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -657,13 +660,12 @@ resources:
         gem install bundler
         bundle install
         wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/badindex.html -O /root/Desktop/badindex.html
+        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/pwnedata.PNG -O /root/Desktop/http/pwnedata.PNG
         cat > "/etc/apt/sources.list" << __EOF__
         deb http://http.kali.org/kali kali-rolling main non-free contrib
         deb-src http://http.kali.org/kali kali-rolling main non-free contrib
         __EOF__
-        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/pwnedata.PNG -O /root/Desktop/http/pwnedata.PNG
-        cd /root/Desktop/http/
-        python3 -m http.server
+        
   kali_4:
     type: OS::Nova::Server
     properties:
@@ -671,6 +673,7 @@ resources:
       flavor: hack.massive
       networks:
         - port: { get_resource: kali_4_port }
+        - network: { get_resource: public }
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -693,6 +696,7 @@ resources:
       flavor: hack.massive
       networks:
         - network: { get_resource: red_net }
+        - network: { get_resource: public }
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
