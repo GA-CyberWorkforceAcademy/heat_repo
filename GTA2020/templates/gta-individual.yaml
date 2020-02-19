@@ -59,6 +59,7 @@ resources:
       cidr: 10.223.0.0/24
       dns_nameservers:
         - 10.101.255.254
+      gateway_ip: 10.223.0.254
   blue_gateway_port:
     type: OS::Neutron::Port
     properties:
@@ -71,30 +72,6 @@ resources:
       network: { get_resource: blue_net }
       fixed_ips:
         - ip_address: 10.223.0.250
-
-## allow-all security group for analyst routable addresses
-  analyst_group:
-    type: OS::Neutron::SecurityGroup
-    properties:
-      rules:
-        - protocol: tcp
-          remote_ip_prefix: 0.0.0.0/0
-          port_range_min: 1
-          port_range_max: 65535
-        - protocol: udp
-          remote_ip_prefix: 0.0.0.0/0
-          port_range_min: 1
-          port_range_max: 65535
-        - protocol: icmp
-          remote_ip_prefix: 0.0.0.0/0
-
-## routable ports for analyst machines
-  analyst_public_port_0:
-    type: OS::Neutron::Port
-    properties:
-      network: public
-      security_groups:
-        - { get_resource: analyst_group }
 
 ## 1.1 Enterprise Network
   green_net:
@@ -305,7 +282,6 @@ resources:
       image: Debian LXQt
       name: analyst-workstation-0
       networks:
-        - port: { get_resource: analyst_public_port_0 }
         - network: { get_resource: blue_net }
       user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
