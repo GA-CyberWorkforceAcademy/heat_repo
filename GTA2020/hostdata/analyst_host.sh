@@ -1,8 +1,15 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 ifup ens3;ifup ens4;ifdown ens3;ifdown ens4;ifup ens3;ifup ens4
-echo "10.192.0.0/10 via 10.223.0.254" > /etc/sysconfig/network-scripts/route-ens3
-echo "10.192.0.0/10 via 10.223.0.254" > /etc/sysconfig/network-scripts/route-ens4
+cat > "/etc/network/interfaces" << __EOF__
+allow-hotplug ens3
+iface ens3 inet dhcp
+
+allow-hotplug ens4
+iface ens4 inet dhcp
+up route add -net 10.192.0.0 netmask 255.192.0.0 gw 190.223.0.254
+__EOF__
+
 echo 'Acquire::http::proxy "http://cache.internal.georgiacyber.org:3142";' > /etc/apt/apt.conf.d/02proxy
 echo 127.0.0.1 $(hostname) >> /etc/hosts
 echo 10.223.0.250 SO.internal >> /etc/hosts
