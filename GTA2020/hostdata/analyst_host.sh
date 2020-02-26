@@ -7,7 +7,7 @@ iface ens3 inet dhcp
 
 allow-hotplug ens4
 iface ens4 inet dhcp
-up route add -net 10.192.0.0 netmask 255.192.0.0 gw 190.223.0.254
+up route add -net 10.192.0.0 netmask 255.192.0.0 gw 10.223.0.254
 __EOF__
 
 echo 'Acquire::http::proxy "http://cache.internal.georgiacyber.org:3142";' > /etc/apt/apt.conf.d/02proxy
