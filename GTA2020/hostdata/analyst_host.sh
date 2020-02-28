@@ -1,7 +1,6 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 ifup ens3;ifup ens4;ifdown ens3;ifdown ens4;ifup ens3;ifup ens4
-/bin/ip route add 10.192.0.0/10 via 10.223.0.254
 echo 'Acquire::http::proxy "http://cache.internal.georgiacyber.org:3142";' > /etc/apt/apt.conf.d/02proxy
 echo 127.0.0.1 $(hostname) >> /etc/hosts
 echo 10.223.0.250 SO.internal >> /etc/hosts
