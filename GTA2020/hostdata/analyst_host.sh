@@ -2,6 +2,7 @@
 export DEBIAN_FRONTEND=noninteractive
 ifup ens3;ifup ens4;ifdown ens3;ifdown ens4;ifup ens3;ifup ens4
 cat > "/etc/network/interfaces" << __EOF__
+auto lo
 allow-hotplug ens3
 iface ens3 inet dhcp
 allow-hotplug ens4
