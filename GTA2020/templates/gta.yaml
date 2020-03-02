@@ -534,7 +534,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: domain_controller
-      flavor: hack.c4.m16284.d256
+      flavor: hack.c4.m16384.d256
       networks:
         - port: { get_resource: green_domain_controller_port }
       image: Windows Server 2016 DE
