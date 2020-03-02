@@ -17,7 +17,7 @@ do {
     $break = $true
   }
   catch {
-    if ($attempt -gt 10){
+    if ($attempt -gt 20){
       Write-Host "Could not join domain!"
       $break = $true
     }
