@@ -2,6 +2,9 @@
 export DEBIAN_FRONTEND=noninteractive
 ifup ens3;ifup ens4;ifdown ens3;ifdown ens4;ifup ens3;ifup ens4
 cat > "/etc/network/interfaces" << __EOF__
+allow-hotplug ens3
+iface ens3 inet dhcp
+allow-hotplug ens4
 iface ens4 inet dhcp
 up route add -net 10.192.0.0 netmask 255.192.0.0 gw 10.223.0.254
 __EOF__
