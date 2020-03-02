@@ -1,13 +1,23 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
-ifup ens3;ifup ens4;ifdown ens3;ifdown ens4;ifup ens3;ifup ens4
+ipaddr=$(hostname -I)
+iparray=($ipaddr)
 cat > "/etc/network/interfaces" << __EOF__
 auto lo
 allow-hotplug ens3
-iface ens3 inet dhcp
+iface ens3 inet static
+address ${iparray[0]}
+netmask 255.255.0.0
+gateway 10.101.255.254
+dns-nameservers 10.101.255.254
+
 allow-hotplug ens4
-iface ens4 inet dhcp
-up route add -net 10.192.0.0 netmask 255.192.0.0 gw 10.223.0.254
+iface ens4 inet static
+address ${iparray[1]}
+netmask 255.255.255.0
+gateway 10.223.0.254
+dns-nameservers 10.101.255.254
+up route add -net 10.192.0.0 netmask 255.192.0.0 gw 10.223.0.254 dev ens4
 __EOF__
 echo 'Acquire::http::proxy "http://cache.internal.georgiacyber.org:3142";' > /etc/apt/apt.conf.d/02proxy
 echo 127.0.0.1 $(hostname) >> /etc/hosts
