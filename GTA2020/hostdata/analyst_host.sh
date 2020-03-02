@@ -43,3 +43,4 @@ systemctl enable xrdp
 iptables -A INPUT -p tcp --dport 3389 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 3389 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables-save > /etc/iptables.rules
+reboot
