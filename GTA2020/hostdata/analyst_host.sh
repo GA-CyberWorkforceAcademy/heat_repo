@@ -29,7 +29,6 @@ git clone https://github.com/vanhauser-thc/thc-hydra.git && cd thc-hydra && ./co
 useradd analyst -m -U -s /bin/bash; usermod -aG sudo analyst
 echo 'root:gmips123' | chpasswd; echo 'analyst:gmips123' | chpasswd
 #--STARTING SERVICES
-/etc/init.d/nessusd start
 cat > "/etc/polkit-1/localauthority.conf.d/02-allow-colord.conf" << __EOF__
 polkit.addRule(function(action, subject) {
 if ((action.id == “org.freedesktop.color-manager.create-device” || action.id == “org.freedesktop.color-manager.create-profile” || action.id == “org.freedesktop.color-manager.delete-device” || action.id == “org.freedesktop.color-manager.delete-profile” || action.id == “org.freedesktop.color-manager.modify-device” || action.id == “org.freedesktop.color-manager.modify-profile”) && subject.isInGroup(“{group}”))
