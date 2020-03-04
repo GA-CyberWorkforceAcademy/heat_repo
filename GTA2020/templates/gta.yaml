@@ -577,7 +577,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: Kali-1
-      flavor: hack.c4.m16384.d64
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_1_port }
       image: Kali Rolling
@@ -600,7 +600,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: Kali-2
-      flavor: hack.c4.m16384.d64
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_2_port }
       image: Kali Rolling
@@ -624,7 +624,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: Kali-3
-      flavor: hack.c4.m16384.d64
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_3_port }
       image: Kali Rolling
@@ -652,7 +652,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: Kali-4
-      flavor: hack.c4.m16384.d64
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_4_port }
       image: Kali Rolling
@@ -675,7 +675,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: Kali-extra
-      flavor: hack.c4.m16384.d64
+      flavor: hack.c4.m16384.d128
       networks:
         - network: { get_resource: red_net }
       image: Kali Rolling
