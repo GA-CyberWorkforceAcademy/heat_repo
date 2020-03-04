@@ -270,7 +270,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: so_gateway
-      flavor: hack.c8.m16384.d256
+      flavor: hack.c8.m16384.d128
       networks:
         - port: { get_resource: red_gateway_port } #ens3
         - port: { get_resource: green_gateway_port } #ens4
@@ -293,7 +293,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: so_master
-      flavor: hack.c8.m16384.d256
+      flavor: hack.c8.m16384.d128
       networks:
         - port: { get_resource: blue_master_port }
       image: "Security Onion"
@@ -312,7 +312,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: traffic_gen
-      flavor: hack.c2.m4096.d256
+      flavor: hack.c2.m4096.d128
       networks:
         - port: { get_resource: traffic_gen_port }
       image: "Debian Buster"
@@ -342,7 +342,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_0
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-0
       networks:
@@ -353,7 +353,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_1
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-1
       networks:
@@ -365,7 +365,7 @@ resources:
     depends_on: blue_subnet, analyst_public_port_2
     depends_on: blue_net
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-2
       networks:
@@ -376,7 +376,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_3
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-3
       networks:
@@ -387,7 +387,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_4
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-4
       networks:
@@ -398,7 +398,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_5
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-5
       networks:
@@ -409,7 +409,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_6
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-6
       networks:
@@ -420,7 +420,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_7
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-7
       networks:
@@ -431,7 +431,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_8
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-8
       networks:
@@ -442,7 +442,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_9
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-9
       networks:
@@ -453,7 +453,7 @@ resources:
     type: OS::Nova::Server
     depends_on: blue_subnet, analyst_public_port_10
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Analyst-Host
       name: analyst-workstation-10
       networks:
@@ -467,7 +467,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: domain_controller
-      flavor: hack.c4.m16384.d256
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: green_domain_controller_port }
       image: Windows Server 2016 DE
@@ -493,7 +493,7 @@ resources:
         depends_on: green_subnet, domain_controller
         properties:
           name: Windows 10 Workstation %index%
-          flavor: hack.c2.m8192.d256
+          flavor: hack.c2.m8192.d64
           networks:
             - network: { get_resource: green_net }
           image: Windows-Host
@@ -506,7 +506,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: DMZ-Server
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - port: { get_resource: white_server_port }
       image: Ubuntu 14.04
@@ -523,7 +523,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-1
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - port: { get_resource: kali_1_port }
       image: Kali Rolling
@@ -545,7 +545,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-2
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - port: { get_resource: kali_2_port }
       image: Kali Rolling
@@ -568,7 +568,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-3
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - port: { get_resource: kali_3_port }
       image: Kali Rolling
@@ -594,7 +594,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-4
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - port: { get_resource: kali_4_port }
       image: Kali Rolling
@@ -616,7 +616,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-extra
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       networks:
         - network: { get_resource: red_net }
         - network: Public
@@ -639,7 +639,7 @@ resources:
     type: OS::Nova::Server
     depends_on: wait_for_gateway_networking
     properties:
-      flavor: hack.c2.m8192.d256
+      flavor: hack.c2.m8192.d32
       image: Debian LXQt
       name: reporter host
       networks:
