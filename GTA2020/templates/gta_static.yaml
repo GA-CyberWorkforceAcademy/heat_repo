@@ -54,20 +54,23 @@ resources:
       port_security_enabled: false
   blue_subnet:
     type: OS::Neutron::Subnet
+    depends_on: blue_net
     properties:
       network: { get_resource: blue_net }
       cidr: 10.223.0.0/24
       dns_nameservers:
         - 10.101.255.254
-      gateway_ip: 10.223.0.254
+      host_routes: [{"nexthop": 10.223.0.254, "destination": 10.220.0.0/24}, {"nexthop": 10.223.0.254, "destination": 10.221.0.0/24}, {"nexthop": 10.223.0.254, "destination": 10.222.0.0/24}]
   blue_gateway_port:
     type: OS::Neutron::Port
+    depends_on: blue_subnet
     properties:
       network: { get_resource: blue_net }
       fixed_ips:
         - ip_address: 10.223.0.254
   blue_master_port:
     type: OS::Neutron::Port
+    depends_on: blue_subnet
     properties:
       network: { get_resource: blue_net }
       fixed_ips:
@@ -169,6 +172,7 @@ resources:
       cidr: 10.221.0.0/24
       dns_nameservers:
         - 10.221.0.10
+        - 10.101.255.254
       gateway_ip: 10.221.0.254
   green_gateway_port:
     type: OS::Neutron::Port
@@ -182,6 +186,12 @@ resources:
       network: { get_resource: green_net }
       fixed_ips:
         - ip_address: 10.221.0.10
+  traffic_gen_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.235      
 
 ## 1.2 DMZ Network
   white_net:
@@ -221,7 +231,7 @@ resources:
       cidr: 200.0.0.0/5
       dns_nameservers:
         - 10.101.255.254
-      gateway_ip: 207.255.255.254
+      host_routes: [{"nexthop": 207.255.255.254, "destination": 10.192.0.0/10}]
   red_gateway_port:
     type: OS::Neutron::Port
     properties:
@@ -253,66 +263,6 @@ resources:
       fixed_ips:
         - ip_address: 200.225.109.3
 
-## 1.4 Signals
-## Pause stack creation until gateway is functional
-  wait_for_gateway_networking:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1200
-      count: 1
-      handle: { get_resource: wait_for_gateway_networking_handle }
-  wait_for_gateway_networking_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
-## Pause stack creation until SO master is functional
-  wait_for_master_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_master_completion_handle }
-  wait_for_master_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
-## Pause stack creation until Domain controller is functional
-  wait_for_domain_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_domain_completion_handle }
-  wait_for_domain_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
-## Pause stack creation until ms3 is functional
-  wait_for_ms3_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_ms3_completion_handle }
-  wait_for_ms3_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
-## Pause stack creation until gateway is fully functional
-  wait_for_so_gateway_final_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 3600
-      count: 1
-      handle: { get_resource: wait_for_so_gateway_final_completion_handle }
-  wait_for_so_gateway_final_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
 
 ## 2.0 Blue Team Resources
 ## gateway serves as core router and SO heavy node/sensor for attached networks
@@ -320,7 +270,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: so_gateway
-      flavor: hack.c4.m16384.d128
+      flavor: hack.c8.m16384.d256
       networks:
         - port: { get_resource: red_gateway_port } #ens3
         - port: { get_resource: green_gateway_port } #ens4
@@ -331,7 +281,7 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/SO_gateway.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_gateway.sh"}
           params:
             $signal_gateway_networking_complete: { get_attr: [wait_for_gateway_networking_handle, curl_cli] }
             $signal_gateway_final_complete: { get_attr: [wait_for_so_gateway_final_completion_handle, curl_cli] }
@@ -343,7 +293,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: so_master
-      flavor: hack.c4.m16384.d128
+      flavor: hack.c8.m16384.d256
       networks:
         - port: { get_resource: blue_master_port }
       image: "Security Onion"
@@ -351,12 +301,25 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
           params:
             $signal_master_complete: { get_attr: [wait_for_master_completion_handle, curl_cli] }
             $username: { get_param: username }
             $userpass: { get_param: userpass }
             $sopass: { get_param: sopass }
+  traffic_gen:
+    type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
+    properties:
+      name: traffic_gen
+      flavor: hack.c2.m4096.d256
+      networks:
+        - port: { get_resource: traffic_gen_port }
+      image: "Debian Buster"
+      config_drive: true
+      user_data_format: RAW
+      user_data: { get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/generate.sh"}
+  
 
   traffic_generators:
     type: OS::Heat::ResourceGroup
@@ -377,135 +340,125 @@ resources:
 ## individual analyst workstations - this template needs to be turned into a pipeline product
   analyst_workstation_0:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_0
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-0
       networks:
         - port: { get_resource: analyst_public_port_0 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_1:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_1
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-1
       networks:
         - port: { get_resource: analyst_public_port_1 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_2:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_2
+    depends_on: blue_net
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-2
       networks:
         - port: { get_resource: analyst_public_port_2 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_3:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_3
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-3
       networks:
         - port: { get_resource: analyst_public_port_3 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_4:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_4
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-4
       networks:
         - port: { get_resource: analyst_public_port_4 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_5:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_5
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-5
       networks:
         - port: { get_resource: analyst_public_port_5 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_6:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_6
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-6
       networks:
         - port: { get_resource: analyst_public_port_6 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_7:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_7
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-7
       networks:
         - port: { get_resource: analyst_public_port_7 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_8:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_8
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-8
       networks:
         - port: { get_resource: analyst_public_port_8 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_9:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_9
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-9
       networks:
         - port: { get_resource: analyst_public_port_9 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
   analyst_workstation_10:
     type: OS::Nova::Server
-    depends_on: [blue_net, wait_for_gateway_networking]
+    depends_on: blue_subnet, analyst_public_port_10
     properties:
-      flavor: hack.c2.m8192.d32
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d256
+      image: Analyst-Host
       name: analyst-workstation-10
       networks:
         - port: { get_resource: analyst_public_port_10 }
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
       user_data_format: RAW
 
 ## 3.0 Enterprise Resources
@@ -514,14 +467,14 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: domain_controller
-      flavor: hack.c4.m8192.d128
+      flavor: hack.c4.m16384.d256
       networks:
         - port: { get_resource: green_domain_controller_port }
       image: Windows Server 2016 DE
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/DC.ps1"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DC.ps1"}
           params:
             safe_mode_administrator_password: { get_param: domainpass }
             domain_name: { get_param: domain_name }
@@ -537,21 +490,15 @@ resources:
       count: 15
       resource_def:
         type: OS::Nova::Server
+        depends_on: green_subnet, domain_controller
         properties:
           name: Windows 10 Workstation %index%
-          flavor: hack.c2.m8192.d64
+          flavor: hack.c2.m8192.d256
           networks:
             - network: { get_resource: green_net }
-          image: Windows 10 Enterprise
+          image: Windows-Host
           user_data_format: RAW
-          user_data:
-            str_replace:
-              template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/lan_host.ps1"}
-              params:
-                admin_password: { get_param: domainpass }
-                domain_name: { get_param: domain_name }
-                domain_netbios_name: { get_param: domain_netbios_name }
-                so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
+
 
 ## 4.0 DMZ Resources
   DMZ_server:
@@ -559,14 +506,14 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: DMZ-Server
-      flavor: hack.c4.m8192.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - port: { get_resource: white_server_port }
       image: Ubuntu 14.04
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
           params:
             $signal_ms3_complete: { get_attr: [wait_for_ms3_completion_handle, curl_cli] }
             $so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
@@ -574,10 +521,9 @@ resources:
 ## 5.0 Red Team Resources
   kali_1:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-1
-      flavor: hack.c4.m16384.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - port: { get_resource: kali_1_port }
       image: Kali Rolling
@@ -597,10 +543,9 @@ resources:
         __EOF__
   kali_2:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-2
-      flavor: hack.c4.m16384.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - port: { get_resource: kali_2_port }
       image: Kali Rolling
@@ -621,10 +566,9 @@ resources:
         __EOF__
   kali_3:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-3
-      flavor: hack.c4.m16384.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - port: { get_resource: kali_3_port }
       image: Kali Rolling
@@ -639,20 +583,18 @@ resources:
         cd dnscat2/server/
         gem install bundler
         bundle install
-        wget https://raw.githubusercontent.com/bitskri3g/metaTest/master/Intel/RedTeam/badindex.html -O /root/Desktop/badindex.html
+        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/badindex.html -O /root/Desktop/badindex.html
+        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/pwnedata.PNG -O /root/Desktop/http/pwnedata.PNG
         cat > "/etc/apt/sources.list" << __EOF__
         deb http://http.kali.org/kali kali-rolling main non-free contrib
         deb-src http://http.kali.org/kali kali-rolling main non-free contrib
         __EOF__
-        wget https://raw.githubusercontent.com/bitskri3g/metaTest/master/Intel/RedTeam/pwnedata.PNG -O /root/Desktop/http/pwnedata.PNG
-        cd /root/Desktop/http/
-        python3 -m http.server
+        
   kali_4:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-4
-      flavor: hack.c4.m16384.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - port: { get_resource: kali_4_port }
       image: Kali Rolling
@@ -672,12 +614,12 @@ resources:
         __EOF__
   kali_extra:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-extra
-      flavor: hack.c4.m16384.d32
+      flavor: hack.c2.m8192.d256
       networks:
         - network: { get_resource: red_net }
+        - network: Public
       image: Kali Rolling
       user_data_format: RAW
       user_data: |
@@ -697,12 +639,12 @@ resources:
     type: OS::Nova::Server
     depends_on: wait_for_gateway_networking
     properties:
-      flavor: hack.c2.m8192.d128
+      flavor: hack.c2.m8192.d256
       image: Debian LXQt
       name: reporter host
       networks:
       - network: {get_resource: red_net}
-      user_data: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/reporter.sh"}
+      user_data: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/reporter.sh"}
       user_data_format: RAW
 
 outputs:

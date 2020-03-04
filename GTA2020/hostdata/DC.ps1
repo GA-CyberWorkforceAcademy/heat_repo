@@ -1,5 +1,8 @@
 #ps1_sysnative
+## For the retry loops to work, ErrorActionPreference *must* be set to Stop
 $ErrorActionPreference = 'Stop'
+
+## if the domain has not been created, run this section.  Otherwise, skip to user creation
 if (!(Test-Path domain_done)) {
 secedit /export /cfg c:\secpol.cfg
 (gc C:\secpol.cfg).replace("PasswordComplexity = 1", "PasswordComplexity = 0") | Out-File C:\secpol.cfg
@@ -12,13 +15,21 @@ $user.SetPassword('safe_mode_administrator_password')
 Import-Module ADDSDeployment
 $safeModePwd = (ConvertTo-SecureString 'safe_mode_administrator_password' -AsPlainText -Force)
 Install-ADDSForest -DomainName 'domain_name' -DomainNetbiosName 'domain_netbios_name' -SafeModeAdministratorPassword $safeModePwd -InstallDns -NoRebootOnCompletion -Force
-[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11"
-Invoke-WebRequest -Method POST -Headers @{"X-Auth-Token" = "$xauthtoken" ; "Content-Type" = "application/json" ; "Accept" = "application/json"} -Uri $endpoint -UseBasicParsing
 New-Item -ItemType file domain_done
 exit 1003
 }
 
+## Reach this section after domain has been created, but before the upstream DNS forward has been set or the waitcondition has been fired
+## if users have been created, skip to GPO creation
+## DNS needs to be very, very carefully configured and adjusted as the script executes.  How windows decides which DNS server to use on which occasion it will
+## flush the cache and retry is unclear, so there should only ever be one DNS server configured:
+## Set green net to point at DC for all DNS.  Until the DC is done, there is effectively no resolution available on green net
+## After directory is installed, but BEFORE waitcondition is fired, set the forwarder to the public gateway.  That way, hosts trying to join will be able to do
+## so without getting NXDOMAIN from the public forwarder.  They should never try and reach the forwarder on their own, or they run the risk of caching bad data
 if (!(Test-Path users_done)) {
+Set-DnsServerForwarder -IPAddress "10.101.255.254" -PassThru
+[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11"
+Invoke-WebRequest -Method POST -Headers @{"X-Auth-Token" = "$xauthtoken" ; "Content-Type" = "application/json" ; "Accept" = "application/json"} -Uri $endpoint -UseBasicParsing
 $password = (ConvertTo-SecureString 'safe_mode_administrator_password' -AsPlainText -Force)
 $cred = New-Object System.Management.Automation.PSCredential ("domain_name\administrator", $password)
 Import-Module ActiveDirectory
@@ -102,4 +113,3 @@ While ($break -eq $false)
 
 New-Item -Path "c:\" -Name "notevil" -ItemType "directory"
 New-SmbShare -Name "share" -Path "c:\notevil" -FullAccess "domain_netbios_name\domain users"
-Invoke-WebRequest -Uri 'https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/Intel/employee_info.xlsx' -Outfile 'c:\notevil\employee_info.xlsx'
