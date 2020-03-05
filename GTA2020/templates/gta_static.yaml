@@ -263,6 +263,66 @@ resources:
       fixed_ips:
         - ip_address: 200.225.109.3
 
+## 1.4 Signals
+## Pause stack creation until gateway is functional
+  wait_for_gateway_networking:
+    type: OS::Heat::WaitCondition
+    properties:
+      timeout: 1200
+      count: 1
+      handle: { get_resource: wait_for_gateway_networking_handle }
+  wait_for_gateway_networking_handle:
+    type: OS::Heat::WaitConditionHandle
+    properties:
+      signal_transport: TOKEN_SIGNAL
+
+## Pause stack creation until SO master is functional
+  wait_for_master_completion:
+    type: OS::Heat::WaitCondition
+    properties:
+      timeout: 1800
+      count: 1
+      handle: { get_resource: wait_for_master_completion_handle }
+  wait_for_master_completion_handle:
+    type: OS::Heat::WaitConditionHandle
+    properties:
+      signal_transport: TOKEN_SIGNAL
+
+## Pause stack creation until Domain controller is functional
+  wait_for_domain_completion:
+    type: OS::Heat::WaitCondition
+    properties:
+      timeout: 1800
+      count: 1
+      handle: { get_resource: wait_for_domain_completion_handle }
+  wait_for_domain_completion_handle:
+    type: OS::Heat::WaitConditionHandle
+    properties:
+      signal_transport: TOKEN_SIGNAL
+
+## Pause stack creation until ms3 is functional
+  wait_for_ms3_completion:
+    type: OS::Heat::WaitCondition
+    properties:
+      timeout: 1800
+      count: 1
+      handle: { get_resource: wait_for_ms3_completion_handle }
+  wait_for_ms3_completion_handle:
+    type: OS::Heat::WaitConditionHandle
+    properties:
+      signal_transport: TOKEN_SIGNAL
+
+## Pause stack creation until gateway is fully functional
+  wait_for_so_gateway_final_completion:
+    type: OS::Heat::WaitCondition
+    properties:
+      timeout: 3600
+      count: 1
+      handle: { get_resource: wait_for_so_gateway_final_completion_handle }
+  wait_for_so_gateway_final_completion_handle:
+    type: OS::Heat::WaitConditionHandle
+    properties:
+      signal_transport: TOKEN_SIGNAL
 
 ## 2.0 Blue Team Resources
 ## gateway serves as core router and SO heavy node/sensor for attached networks
