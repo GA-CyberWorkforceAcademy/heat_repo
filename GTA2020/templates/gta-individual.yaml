@@ -189,18 +189,6 @@ resources:
     properties:
       signal_transport: TOKEN_SIGNAL
 
-## Pause stack creation until ms3 is functional
-  wait_for_ms3_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_ms3_completion_handle }
-  wait_for_ms3_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
 ## Pause stack creation until gateway is fully functional
   wait_for_so_gateway_final_completion:
     type: OS::Heat::WaitCondition
@@ -328,7 +316,6 @@ resources:
         str_replace:
           template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
           params:
-            $signal_ms3_complete: { get_attr: [wait_for_ms3_completion_handle, curl_cli] }
             $so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
 
 ## 5.0 Red Team Resources

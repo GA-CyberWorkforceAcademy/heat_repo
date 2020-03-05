@@ -56,5 +56,4 @@ mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.1
 echo "Adam_Garrett:CphTH" | chpasswd
 echo "Vanessa_Cohen:Y71N1" | chpasswd
 # --signals completion
-$signal_ms3_complete
 exit 1001
