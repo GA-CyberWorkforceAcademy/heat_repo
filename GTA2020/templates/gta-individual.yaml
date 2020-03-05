@@ -251,8 +251,8 @@ resources:
     depends_on: blue_net
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
-      name: analyst-workstation-0
+      image: analyst-workstation
+      name: analyst-workstation
       networks:
         - network: { get_resource: blue_net }
 

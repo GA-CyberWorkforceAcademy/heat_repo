@@ -390,8 +390,8 @@ resources:
     depends_on: analyst_public_port_0
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
-      name: analyst-workstation-0
+      image: analyst-workstation
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_0 }
         - network: { get_resource: blue_net }
@@ -401,7 +401,7 @@ resources:
     depends_on: analyst_public_port_1
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_1 }
@@ -413,7 +413,7 @@ resources:
     depends_on: blue_net
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_2 }
@@ -424,7 +424,7 @@ resources:
     depends_on: analyst_public_port_3
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_3 }
@@ -435,7 +435,7 @@ resources:
     depends_on: analyst_public_port_4
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_4 }
@@ -446,7 +446,7 @@ resources:
     depends_on: analyst_public_port_5
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_5 }
@@ -457,7 +457,7 @@ resources:
     depends_on: analyst_public_port_6
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_6 }
@@ -468,7 +468,7 @@ resources:
     depends_on: analyst_public_port_7
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_7 }
@@ -479,7 +479,7 @@ resources:
     depends_on: analyst_public_port_8
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_8 }
@@ -490,7 +490,7 @@ resources:
     depends_on: analyst_public_port_9
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_9 }
@@ -501,7 +501,7 @@ resources:
     depends_on: analyst_public_port_10
     properties:
       flavor: hack.c2.m8192.d32
-      image: Analyst-Host
+      image: analyst-workstation
       name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_10 }
