@@ -411,7 +411,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_1:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_1
+    depends_on: analyst_public_port_1
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -422,7 +422,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_2:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_2
+    depends_on: analyst_public_port_2
     depends_on: blue_net
     properties:
       flavor: hack.c2.m8192.d32
@@ -434,7 +434,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_3:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_3
+    depends_on: analyst_public_port_3
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -445,7 +445,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_4:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_4
+    depends_on: analyst_public_port_4
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -456,7 +456,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_5:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_5
+    depends_on: analyst_public_port_5
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -467,7 +467,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_6:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_6
+    depends_on: analyst_public_port_6
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -478,7 +478,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_7:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_7
+    depends_on: analyst_public_port_7
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -489,7 +489,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_8:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_8
+    depends_on: analyst_public_port_8
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -500,7 +500,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_9:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_9
+    depends_on: analyst_public_port_9
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
@@ -511,7 +511,7 @@ resources:
       user_data_format: RAW
   analyst_workstation_10:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_10
+    depends_on: analyst_public_port_10
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
