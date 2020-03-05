@@ -400,7 +400,7 @@ resources:
 ## individual analyst workstations - this template needs to be turned into a pipeline product
   analyst_workstation_0:
     type: OS::Nova::Server
-    depends_on: blue_subnet, analyst_public_port_0
+    depends_on: analyst_public_port_0
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
