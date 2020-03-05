@@ -50,6 +50,8 @@ iptables -A FORWARD -p tcp -i ens5 -o ens3 -m state --state RELATED,ESTABLISHED 
 ## Allow red to smb share
 iptables -A FORWARD -p tcp --dport 445 -i ens3 -o ens4 -j ACCEPT
 iptables -A FORWARD -p tcp -i ens4 -o ens3 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp --sport 445 -i ens3 -o ens4 -j ACCEPT
+iptables -A FORWARD -p tcp -i ens4 -o ens3 -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 ## Allow SSH between dmz & blue net
 iptables -A FORWARD -p tcp --dport ssh -i ens6 -o ens5 -m state --state RELATED,ESTABLISHED -j ACCEPT
