@@ -562,7 +562,7 @@ resources:
 ## 4.0 DMZ Resources
   DMZ_server:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking, wait_for_domain_completion
+    depends_on: wait_for_domain_completion
     properties:
       name: DMZ-Server
       flavor: hack.c2.m8192.d32
