@@ -60,7 +60,6 @@ resources:
       cidr: 10.223.0.0/24
       dns_nameservers:
         - 10.101.255.254
-      host_routes: [{"nexthop": 10.223.0.254, "destination": 10.220.0.0/24}, {"nexthop": 10.223.0.254, "destination": 10.221.0.0/24}, {"nexthop": 10.223.0.254, "destination": 10.222.0.0/24}]
   blue_gateway_port:
     type: OS::Neutron::Port
     depends_on: blue_subnet
@@ -403,7 +402,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-1
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_1 }
         - network: { get_resource: blue_net }
@@ -415,7 +414,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-2
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_2 }
         - network: { get_resource: blue_net }
@@ -426,7 +425,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-3
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_3 }
         - network: { get_resource: blue_net }
@@ -437,7 +436,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-4
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_4 }
         - network: { get_resource: blue_net }
@@ -448,7 +447,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-5
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_5 }
         - network: { get_resource: blue_net }
@@ -459,7 +458,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-6
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_6 }
         - network: { get_resource: blue_net }
@@ -470,7 +469,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-7
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_7 }
         - network: { get_resource: blue_net }
@@ -481,7 +480,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-8
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_8 }
         - network: { get_resource: blue_net }
@@ -492,7 +491,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-9
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_9 }
         - network: { get_resource: blue_net }
@@ -503,7 +502,7 @@ resources:
     properties:
       flavor: hack.c2.m8192.d32
       image: Analyst-Host
-      name: analyst-workstation-10
+      name: analyst-workstation
       networks:
         - port: { get_resource: analyst_public_port_10 }
         - network: { get_resource: blue_net }
