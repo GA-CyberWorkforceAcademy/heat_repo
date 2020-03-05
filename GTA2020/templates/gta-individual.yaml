@@ -135,22 +135,22 @@ resources:
     type: OS::Neutron::Subnet
     properties:
       network: { get_resource: red_net }
-      cidr: 200.0.0.0/5
+      cidr: 10.224.0.0/24
       dns_nameservers:
         - 10.101.255.254
-      gateway_ip: 207.255.255.254
+      gateway_ip: 10.224.0.254
   red_gateway_port:
     type: OS::Neutron::Port
     properties:
       network: { get_resource: red_net }
       fixed_ips:
-        - ip_address: 207.255.255.254
+        - ip_address: 10.224.0.254
   kali_1_port:
     type: OS::Neutron::Port
     properties:
       network: { get_resource: red_net }
       fixed_ips:
-        - ip_address: 205.140.100.1
+        - ip_address: 10.224.0.10
 
 ## 1.4 Signals
 ## Pause stack creation until gateway is functional
@@ -219,7 +219,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: so_gateway
-      flavor: hack.massive
+      flavor: hack.c8.m16384.d128
       networks:
         - port: { get_resource: red_gateway_port } #ens3
         - port: { get_resource: green_gateway_port } #ens4
@@ -242,7 +242,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: so_master
-      flavor: hack.massive
+      flavor: hack.c8.m16384.d128
       networks:
         - port: { get_resource: blue_master_port }
       image: "Security Onion"
@@ -257,34 +257,16 @@ resources:
             $userpass: { get_param: userpass }
             $sopass: { get_param: sopass }
 
-  traffic_generators:
-    type: OS::Heat::ResourceGroup
-    depends_on: wait_for_gateway_networking
-    properties:
-      count: 10
-      resource_def:
-        type: OS::Zun::Container
-        properties:
-          name: traffic-generator-%index%
-          image: "danielkvist/whisperer"
-          image_driver: docker
-          cpu: 1
-          memory: 512
-          networks:
-            - network: { get_resource: green_net }
-
 ## individual analyst workstations - this template needs to be turned into a pipeline product
   analyst_workstation_0:
     type: OS::Nova::Server
     depends_on: blue_net
     properties:
-      flavor: cy.mega
-      image: Debian LXQt
+      flavor: hack.c2.m8192.d32
+      image: Analyst-Host
       name: analyst-workstation-0
       networks:
         - network: { get_resource: blue_net }
-      user_data: {get_file : https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/analyst_host.sh}
-      user_data_format: RAW
 
 ## 3.0 Enterprise Resources
   domain_controller:
@@ -292,7 +274,7 @@ resources:
     depends_on: wait_for_gateway_networking
     properties:
       name: domain_controller
-      flavor: cy.large
+      flavor: hack.c4.m8192.d128
       networks:
         - port: { get_resource: green_domain_controller_port }
       image: Windows Server 2016 DE
@@ -317,7 +299,7 @@ resources:
         type: OS::Nova::Server
         properties:
           name: Windows 10 Workstation %index%
-          flavor: cy.mega
+          flavor: hack.c2.m8192.d64
           networks:
             - network: { get_resource: green_net }
           image: Windows 10 Enterprise
@@ -334,10 +316,10 @@ resources:
 ## 4.0 DMZ Resources
   DMZ_server:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
+    depends_on: wait_for_gateway_networking, wait_for_domain_completion
     properties:
       name: DMZ-Server
-      flavor: cy.large
+      flavor: hack.c4.m8192.d32
       networks:
         - port: { get_resource: white_server_port }
       image: Ubuntu 14.04
@@ -354,7 +336,7 @@ resources:
     type: OS::Nova::Server
     properties:
       name: Kali-1
-      flavor: hack.massive
+      flavor: hack.c4.m16384.d128
       networks:
         - port: { get_resource: kali_1_port }
       image: Kali Rolling
@@ -362,12 +344,6 @@ resources:
       user_data: |
         #!/bin/bash
         echo "root:toor" | chpasswd
-        apt-get update
-        apt-get install gem ruby-dev
-        git clone https://github.com/iagox86/dnscat2.git
-        cd dnscat2/server/
-        gem install bundler
-        bundle install
         cat > "/etc/apt/sources.list" << __EOF__
         deb http://http.kali.org/kali kali-rolling main non-free contrib
         deb-src http://http.kali.org/kali kali-rolling main non-free contrib
