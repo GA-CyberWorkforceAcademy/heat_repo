@@ -377,7 +377,7 @@ resources:
         type: OS::Zun::Container
         properties:
           name: traffic-generator-%index%
-          image: "danielkvist/whisperer"
+          image: "GA-CyberWorkforceAcademy/whisperer"
           image_driver: docker
           cpu: 1
           memory: 512

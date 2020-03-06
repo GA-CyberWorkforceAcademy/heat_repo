@@ -83,5 +83,5 @@ ufw disable
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.php -O /var/www/so/index.php
 mkdir /var/www/so/Intel
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.html -O /var/www/so/Intel/index.html
-$signal_master_complete
 echo master_done | nc 10.223.0.254 12345
+$signal_master_complete
