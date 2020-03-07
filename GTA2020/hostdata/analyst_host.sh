@@ -10,6 +10,7 @@ address ${iparray[0]}
 netmask 255.255.0.0
 gateway 10.101.255.254
 dns-nameservers 10.101.255.254
+up route add -net 10.150.0.0 netmask 255.255.0.0 gw 10.101.255.254 dev ens4
 
 allow-hotplug ens4
 iface ens4 inet static
