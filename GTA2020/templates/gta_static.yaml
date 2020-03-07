@@ -504,8 +504,8 @@ resources:
     type: OS::Heat::ResourceGroup
     depends_on: wait_for_domain_completion
     properties:
-##Increase count to 15 for group event
-      count: 15
+##Increase count to 10 for group event
+      count: 10
       resource_def:
         type: OS::Nova::Server
         properties:
