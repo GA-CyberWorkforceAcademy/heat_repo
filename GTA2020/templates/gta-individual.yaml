@@ -59,7 +59,6 @@ resources:
       cidr: 10.223.0.0/24
       dns_nameservers:
         - 10.101.255.254
-      gateway_ip: 10.223.0.254
   blue_gateway_port:
     type: OS::Neutron::Port
     properties:
@@ -165,18 +164,6 @@ resources:
     properties:
       signal_transport: TOKEN_SIGNAL
 
-## Pause stack creation until SO master is functional
-  wait_for_master_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_master_completion_handle }
-  wait_for_master_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
 ## Pause stack creation until Domain controller is functional
   wait_for_domain_completion:
     type: OS::Heat::WaitCondition
@@ -218,7 +205,7 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/SO_gateway.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_gateway.sh"}
           params:
             $signal_gateway_networking_complete: { get_attr: [wait_for_gateway_networking_handle, curl_cli] }
             $signal_gateway_final_complete: { get_attr: [wait_for_so_gateway_final_completion_handle, curl_cli] }
@@ -238,9 +225,8 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
           params:
-            $signal_master_complete: { get_attr: [wait_for_master_completion_handle, curl_cli] }
             $username: { get_param: username }
             $userpass: { get_param: userpass }
             $sopass: { get_param: sopass }
@@ -269,7 +255,7 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/DC.ps1"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DC.ps1"}
           params:
             safe_mode_administrator_password: { get_param: domainpass }
             domain_name: { get_param: domain_name }
@@ -294,7 +280,7 @@ resources:
           user_data_format: RAW
           user_data:
             str_replace:
-              template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/lan_host.ps1"}
+              template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/lan_host.ps1"}
               params:
                 admin_password: { get_param: domainpass }
                 domain_name: { get_param: domain_name }
@@ -314,7 +300,7 @@ resources:
       user_data_format: RAW
       user_data:
         str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/bitskri3g/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
+          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
           params:
             $so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
 
