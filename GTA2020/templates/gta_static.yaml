@@ -275,18 +275,6 @@ resources:
     properties:
       signal_transport: TOKEN_SIGNAL
 
-## Pause stack creation until SO master is functional
-  wait_for_master_completion:
-    type: OS::Heat::WaitCondition
-    properties:
-      timeout: 1800
-      count: 1
-      handle: { get_resource: wait_for_master_completion_handle }
-  wait_for_master_completion_handle:
-    type: OS::Heat::WaitConditionHandle
-    properties:
-      signal_transport: TOKEN_SIGNAL
-
 ## Pause stack creation until Domain controller is functional
   wait_for_domain_completion:
     type: OS::Heat::WaitCondition
@@ -350,10 +338,10 @@ resources:
         str_replace:
           template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
           params:
-            $signal_master_complete: { get_attr: [wait_for_master_completion_handle, curl_cli] }
             $username: { get_param: username }
             $userpass: { get_param: userpass }
             $sopass: { get_param: sopass }
+  
   traffic_gen:
     type: OS::Nova::Server
     depends_on: wait_for_gateway_networking
@@ -366,23 +354,6 @@ resources:
       config_drive: true
       user_data_format: RAW
       user_data: { get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/generate.sh"}
-  
-
-  traffic_generators:
-    type: OS::Heat::ResourceGroup
-    depends_on: wait_for_gateway_networking
-    properties:
-      count: 10
-      resource_def:
-        type: OS::Zun::Container
-        properties:
-          name: traffic-generator-%index%
-          image: "GA-CyberWorkforceAcademy/whisperer"
-          image_driver: docker
-          cpu: 1
-          memory: 512
-          networks:
-            - network: { get_resource: green_net }
 
 ## individual analyst workstations - this template needs to be turned into a pipeline product
   analyst_workstation_0:
