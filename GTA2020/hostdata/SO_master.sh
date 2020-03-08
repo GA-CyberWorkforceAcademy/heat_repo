@@ -88,9 +88,10 @@ __EOF__
 
 sosetup -y -f /root/sosetup.conf
 ufw disable
-/var/ossec/bin/ossec-authd
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.php -O /var/www/so/index.php
 mkdir /var/www/so/Intel
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.html -O /var/www/so/Intel/index.html
+openssl req -x509 -batch -nodes -days 365 -newkey rsa:2048 -out /var/ossec/etc/sslmanager.cert -keyout /var/ossec/etc/sslmanager.key
+/var/ossec/bin/ossec-authd
 exit 1001
 
