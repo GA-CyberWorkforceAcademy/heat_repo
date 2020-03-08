@@ -10,16 +10,20 @@ auto lo
 iface lo inet loopback
 auto ens3
 iface ens3 inet static
-address 207.255.255.254/24
+address 207.255.255.254
+netmask 255.255.255.0
 auto ens4
 iface ens4 inet static
-address 10.221.0.254/24
+address 10.221.0.254
+netmask 255.255.255.0
 auto ens5
 iface ens5 inet static
-address 10.222.0.254/24
+address 10.222.0.254
+netmask 255.255.255.0
 auto ens6
 iface ens6 inet static
-address 10.223.0.254/24
+address 10.223.0.254
+netmask 255.255.255.0
 auto ens7
 __EOF__
 for num in {3..6};do dhclient -r ens$num ; ifdown ens$num ; ip route delete default dev ens$num ; ifup ens$num;done
