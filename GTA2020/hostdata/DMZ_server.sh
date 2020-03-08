@@ -55,5 +55,4 @@ Pass="P@ssword123"
 mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.10/share /mnt/win_share
 echo "Adam_Garrett:CphTH" | chpasswd
 echo "Vanessa_Cohen:Y71N1" | chpasswd
-# --signals completion
 exit 1001

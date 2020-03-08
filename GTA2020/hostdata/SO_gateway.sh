@@ -191,5 +191,6 @@ wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/pcaps/EK1.p
 wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/pcaps/EK2.pcap -O /TRA_Pcaps/EK2.pcap
 wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/pcaps/EK3.pcap -O /TRA_Pcaps/EK3.pcap
 wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/pcaps/OPT1.pcap -O /TRA_Pcaps/OPT1.pcap
+wget https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/pcaps/OPT2.zip -O /TRA_Pcaps/OPT2.zip
 ## Signal that gateway final is complete
 $signal_gateway_final_complete
