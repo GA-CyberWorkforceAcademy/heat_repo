@@ -25,6 +25,7 @@ iface ens6 inet static
 address 10.223.0.254
 netmask 255.255.255.0
 auto ens7
+iface ens7 inet dhcp
 __EOF__
 for num in {3..6};do dhclient -r ens$num ; ifdown ens$num ; ip route delete default dev ens$num ; ifup ens$num;done
 
@@ -66,8 +67,12 @@ do
 iptables -A FORWARD -i ens6 -o ens$num -j ACCEPT
 iptables -A FORWARD -i ens$num -o ens6 -m state --state RELATED,ESTABLISHED -j ACCEPT
 done
-## Enterprise to blue net for RDP
+## Enterprise to blue net for RDP _ ossec/Wazuh
+iptables -A FORWARD -p tcp --dport 3389 -i ens6 -o ens4 -j ACCEPT
+iptables -A FORWARD -i ens4 -o ens6 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -p tcp --dport 3389 -i ens4 -o ens6 -j ACCEPT
+iptables -A FORWARD -i ens6 -o ens4 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -m multiport --dport 1514,1515 -i ens4 -o ens6 -j ACCEPT
 iptables -A FORWARD -i ens6 -o ens4 -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 iptables-save > /etc/iptables.rules

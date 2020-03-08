@@ -39,6 +39,6 @@ Invoke-WebRequest -Uri 'https://github.com/ytisf/theZoo/raw/master/malwares/Bina
 Invoke-WebRequest -Uri 'https://github.com/ytisf/theZoo/raw/master/malwares/Binaries/Ransomware.Cerber/Ransomware.Cerber.zip' -Outfile 'c:\BabyStuff.zip'
 Invoke-WebRequest -Uri 'https://github.com/ytisf/theZoo/raw/master/malwares/Binaries/Win32.KeyPass/Win32.KeyPass.zip' -Outfile 'c:\keys.zip'
 Invoke-WebRequest -Uri 'https://github.com/GA-CyberWorkforceAcademy/metaTest/raw/master/resources/backdoors/notashell.exe' -Outfile 'c:\notagame.exe'
-Invoke-WebRequest -Uri 'https://packages.wazuh.com/3.x/windows/wazuh-agent-3.9.5-1.msi' -Outfile 'c:\wazuh.msi'
-start-process c:\wazuh.msi -ArgumentList 'ADDRESS="so_master_address" AUTHD_SERVER="so_master_address" /passive' -wait
+Invoke-WebRequest -Uri 'https://packages.wazuh.com/3.x/windows/wazuh-agent-3.6.1-1.msi' -Outfile 'c:\wazuh.msi'
+start-process c:\wazuh.msi -ArgumentList 'ADDRESS="10.223.0.250" AUTHD_SERVER="10.223.0.250" /passive' -wait
 exit 1001

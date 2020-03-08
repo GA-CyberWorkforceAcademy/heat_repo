@@ -2,12 +2,11 @@
 
 ## Set password for so user
 echo "so:$sopass" | chpasswd
-ipaddr=$(hostname -I)
 cat > "/etc/network/interfaces" << __EOF__
 auto lo
 allow-hotplug ens3
 iface ens3 inet static
-address $ipaddr
+address 10.223.0.250r
 netmask 255.255.255.0
 gateway 10.223.0.254
 dns-nameservers 10.101.255.254
@@ -93,4 +92,5 @@ ufw disable
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.php -O /var/www/so/index.php
 mkdir /var/www/so/Intel
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.html -O /var/www/so/Intel/index.html
-echo master_done | nc 10.223.0.254 12345
+exit 1001
+
