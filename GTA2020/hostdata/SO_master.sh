@@ -2,6 +2,9 @@
 
 ## Set password for so user
 echo "so:$sopass" | chpasswd
+useradd Salvatore.Boone -U -m -s /bin/bash
+usermod -aG sudo Salvatore.Boone
+echo "Salvatore.Boone:5wXzK" | chpasswd
 cat > "/etc/network/interfaces" << __EOF__
 auto lo
 allow-hotplug ens3
