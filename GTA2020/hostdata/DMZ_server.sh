@@ -44,14 +44,9 @@ apt-get install curl apt-transport-https lsb-release
 curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
 echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list
 apt-get update && apt-get install wazuh-agent -y
-/var/ossec/bin/agent-auth -m $so_master_address
+/var/ossec/bin/agent-auth -m 10.223.0.250
 ## --install dnscat2 client
 git clone https://github.com/iagox86/dnscat2.git
 cd dnscat2/client/
 make
-##mount share from DC
-mkdir /mnt/DC_share
-username="administrator"
-Pass="P@ssword123"
-mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.10/share /mnt/DC_share
 exit 1001
