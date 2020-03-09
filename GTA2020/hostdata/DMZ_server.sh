@@ -1,9 +1,10 @@
-
-#!/bin/bash
+!/bin/bash
 ##-- setup users
 echo "root:toor" | chpasswd
 useradd Adam_Garrett -U -m -s /bin/bash
 useradd Vanessa_Cohen -U -m -s /bin/bash
+echo "Adam_Garrett:CphTH" | chpasswd
+echo "Vanessa_Cohen:Y71N1" | chpasswd
 ## --allow ssh login with password based authentication
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 service ssh restart
@@ -49,10 +50,8 @@ git clone https://github.com/iagox86/dnscat2.git
 cd dnscat2/client/
 make
 ##mount share from DC
-mkdir /mnt/win_share
+mkdir /mnt/DC_share
 username="administrator"
 Pass="P@ssword123"
-mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.10/share /mnt/win_share
-echo "Adam_Garrett:CphTH" | chpasswd
-echo "Vanessa_Cohen:Y71N1" | chpasswd
+mount -t cifs -o username=$username, password=$Pass, domain="gmips" //10.221.0.10/share /mnt/DC_share
 exit 1001

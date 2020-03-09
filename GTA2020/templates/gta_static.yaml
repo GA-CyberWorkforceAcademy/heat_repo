@@ -499,24 +499,109 @@ resources:
             domain_netbios_name: { get_param: domain_netbios_name }
             $xauthtoken: { get_attr: [wait_for_domain_completion_handle, token] }
             $endpoint: { get_attr: [wait_for_domain_completion_handle, endpoint] }
-
-  windows_workstations:
-    type: OS::Heat::ResourceGroup
+## HIDS not Registered
+  windows-1:
+    type: OS::Nova::Server
     depends_on: wait_for_domain_completion
     properties:
-##Increase count to 10 for group event
-      count: 10
-      resource_def:
-        type: OS::Nova::Server
-        properties:
-          name: Windows 10 Workstation %index%
-          flavor: hack.c2.m8192.d64
-          networks:
-            - network: { get_resource: green_net }
-          image: Windows 10 Enterprise
-          user_data_format: RAW
-
-
+      name: GMIPS-1
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-1
+      user_data_format: RAW 
+  windows-2:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-2
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-2
+      user_data_format: RAW
+## HIDS not Registered
+  windows-3:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-3
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-3
+      user_data_format: RAW
+  windows-4:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-4
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-4
+      user_data_format: RAW
+  windows-5:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-5
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-5
+      user_data_format: RAW
+## HIDS not Registered  
+  windows-6:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-6
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-6
+      user_data_format: RAW
+  windows-7:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-7
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-7
+      user_data_format: RAW
+  windows-8:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-8
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-8
+      user_data_format: RAW
+  windows-9:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-9
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-9
+      user_data_format: RAW
+  windows-10:
+    type: OS::Nova::Server
+    depends_on: wait_for_domain_completion
+    properties:
+      name: GMIPS-10
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-10
+      user_data_format: RAW
 ## 4.0 DMZ Resources
   DMZ_server:
     type: OS::Nova::Server

@@ -263,29 +263,16 @@ resources:
             $xauthtoken: { get_attr: [wait_for_domain_completion_handle, token] }
             $endpoint: { get_attr: [wait_for_domain_completion_handle, endpoint] }
 
-  windows_workstations:
-    type: OS::Heat::ResourceGroup
+  windows_workstation:
+    type: OS::Nova::Server
     depends_on: wait_for_domain_completion
     properties:
-##Increase count to 15 for group event
-      count: 3
-      resource_def:
-        type: OS::Nova::Server
-        properties:
-          name: Windows 10 Workstation %index%
-          flavor: hack.c2.m8192.d64
-          networks:
-            - network: { get_resource: green_net }
-          image: Windows 10 Enterprise
-          user_data_format: RAW
-          user_data:
-            str_replace:
-              template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/lan_host.ps1"}
-              params:
-                admin_password: { get_param: domainpass }
-                domain_name: { get_param: domain_name }
-                domain_netbios_name: { get_param: domain_netbios_name }
-                so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
+      name: GMIPS-10
+      flavor: hack.c2.m8192.d64
+      networks:
+        - network: { get_resource: green_net }
+      image: GMIPS-10
+      user_data_format: RAW
 
 ## 4.0 DMZ Resources
   DMZ_server:
