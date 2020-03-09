@@ -5,8 +5,9 @@ echo "so:$sopass" | chpasswd
 cat > "/etc/network/interfaces" << __EOF__
 auto lo
 allow-hotplug ens3
+auto ens3
 iface ens3 inet static
-address 10.223.0.250r
+address 10.223.0.250
 netmask 255.255.255.0
 gateway 10.223.0.254
 dns-nameservers 10.101.255.254
