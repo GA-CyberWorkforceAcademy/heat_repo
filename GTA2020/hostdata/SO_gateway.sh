@@ -28,6 +28,8 @@ auto ens7
 iface ens7 inet dhcp
 __EOF__
 for num in {3..6};do dhclient -r ens$num ; ifdown ens$num ; ip route delete default dev ens$num ; ifup ens$num;done
+##restart networking
+systemctl restart networking
 
 ## Allow forwarding
 sysctl -w net.ipv4.ip_forward=1
@@ -72,8 +74,8 @@ iptables -A FORWARD -p tcp --dport 3389 -i ens6 -o ens4 -j ACCEPT
 iptables -A FORWARD -i ens4 -o ens6 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -p tcp --dport 3389 -i ens4 -o ens6 -j ACCEPT
 iptables -A FORWARD -i ens6 -o ens4 -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -p tcp -m multiport --dport 1514,1515 -i ens4 -o ens6 -j ACCEPT
-iptables -A FORWARD -i ens6 -o ens4 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p udp -m multiport --dport 1514,1515 -i ens4 -o ens6 -j ACCEPT
+iptables -A FORWARD -p udp -m multiport --dport 1514,1515 -i ens6 -o ens4 -j ACCEPT
 
 iptables-save > /etc/iptables.rules
 
@@ -192,7 +194,7 @@ __EOF__
 ## disable the internal firewall
 ufw disable
 ## wait until nc exits, then run setup
-nc -l 12345 -q 5
+nc -l 12345 -q 10
 sosetup -yf /root/sosetup.conf
 ufw disable
 mkdir /TRA_Pcaps

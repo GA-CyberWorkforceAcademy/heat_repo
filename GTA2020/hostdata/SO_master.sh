@@ -12,7 +12,8 @@ netmask 255.255.255.0
 gateway 10.223.0.254
 dns-nameservers 10.101.255.254
 __EOF__
-
+##restart networking
+systemctl restart networking
 ## adjust threshold to avoid softlocks for ancient kernel
 sysctl -w kernel.watchdog_thresh=20
 echo kernel.watchdog_thresh=20 >> /etc/sysctl.conf
@@ -92,7 +93,5 @@ ufw disable
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.php -O /var/www/so/index.php
 mkdir /var/www/so/Intel
 wget https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/metaTest/master/SO_edits/index.html -O /var/www/so/Intel/index.html
-openssl req -x509 -batch -nodes -days 365 -newkey rsa:2048 -out /var/ossec/etc/sslmanager.cert -keyout /var/ossec/etc/sslmanager.key
-/var/ossec/bin/ossec-authd
 exit 1001
 
