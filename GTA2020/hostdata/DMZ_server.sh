@@ -1,5 +1,4 @@
 #!/bin/bash
-##-- setup users
 echo "root:toor" | chpasswd
 useradd Adam_Garrett -U -m -s /bin/bash
 useradd Vanessa_Cohen -U -m -s /bin/bash
