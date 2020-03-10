@@ -216,19 +216,14 @@ resources:
 ## 4.0 DMZ Resources
   DMZ_server:
     type: OS::Nova::Server
-    depends_on: wait_for_domain_completion
+    depends_on: gateway
     properties:
       name: DMZ-Server
       flavor: hack.c4.m8192.d32
       networks:
         - port: { get_resource: white_server_port }
-      image: Ubuntu 14.04
+      image: DMZ-Server
       user_data_format: RAW
-      user_data:
-        str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DMZ_server.sh"}
-          params:
-            $so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
 
 ## 5.0 Red Team Resources
   kali_1:
