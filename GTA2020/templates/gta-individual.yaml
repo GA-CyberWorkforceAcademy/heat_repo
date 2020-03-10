@@ -201,35 +201,20 @@ resources:
         - port: { get_resource: white_gateway_port } #ens5
         - port: { get_resource: blue_gateway_port } #ens6
         - network: Public #ens7
-      image: "Security Onion"
+      image: so-gateway
       user_data_format: RAW
-      user_data:
-        str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_gateway.sh"}
-          params:
-            $signal_gateway_networking_complete: { get_attr: [wait_for_gateway_networking_handle, curl_cli] }
-            $signal_gateway_final_complete: { get_attr: [wait_for_so_gateway_final_completion_handle, curl_cli] }
-            $so_master_address: { get_attr: [blue_master_port, fixed_ips, 0, ip_address] }
-            $sopass: { get_param: sopass }
 
   so_master:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
+    depends_on: gateway
     properties:
       name: so_master
       flavor: hack.c8.m16384.d128
       networks:
         - port: { get_resource: blue_master_port }
-      image: "Security Onion"
+      image: so-master
       config_drive: true
       user_data_format: RAW
-      user_data:
-        str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/SO_master.sh"}
-          params:
-            $username: { get_param: username }
-            $userpass: { get_param: userpass }
-            $sopass: { get_param: sopass }
 
 ## individual analyst workstations - this template needs to be turned into a pipeline product
   analyst_workstation_0:
@@ -245,27 +230,18 @@ resources:
 ## 3.0 Enterprise Resources
   domain_controller:
     type: OS::Nova::Server
-    depends_on: wait_for_gateway_networking
+    depends_on: gateway
     properties:
       name: domain_controller
       flavor: hack.c4.m8192.d128
       networks:
         - port: { get_resource: green_domain_controller_port }
-      image: Windows Server 2016 DE
+      image: GMIPS-DC
       user_data_format: RAW
-      user_data:
-        str_replace:
-          template: {get_file : "https://raw.githubusercontent.com/GA-CyberWorkforceAcademy/heat_repo/master/GTA2020/hostdata/DC.ps1"}
-          params:
-            safe_mode_administrator_password: { get_param: domainpass }
-            domain_name: { get_param: domain_name }
-            domain_netbios_name: { get_param: domain_netbios_name }
-            $xauthtoken: { get_attr: [wait_for_domain_completion_handle, token] }
-            $endpoint: { get_attr: [wait_for_domain_completion_handle, endpoint] }
 
   windows_workstation:
     type: OS::Nova::Server
-    depends_on: wait_for_domain_completion
+    depends_on: domain_controller
     properties:
       name: GMIPS-10
       flavor: hack.c2.m8192.d64

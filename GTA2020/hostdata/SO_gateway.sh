@@ -1,4 +1,4 @@
-#!/bin/bash
+meta#!/bin/bash
 
 ## Set password for so user
 echo "so:$sopass" | chpasswd
