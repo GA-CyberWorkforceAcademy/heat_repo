@@ -189,7 +189,49 @@ resources:
     properties:
       network: { get_resource: green_net }
       fixed_ips:
-        - ip_address: 10.221.0.235      
+        - ip_address: 10.221.0.235
+  GMIPS-2_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.148
+  GMIPS-4_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.244
+  GMIPS-5_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.171
+  GMIPS-7_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.42
+  GMIPS-8_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.157
+  GMIPS-9_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.79
+  GMIPS-10_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: green_net }
+      fixed_ips:
+        - ip_address: 10.221.0.160     
 
 ## 1.2 DMZ Network
   white_net:
@@ -443,7 +485,7 @@ resources:
       name: GMIPS-2
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-2_port }
       image: GMIPS-2
       user_data_format: RAW
 ## HIDS not Registered
@@ -464,7 +506,7 @@ resources:
       name: GMIPS-4
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-4 }
       image: GMIPS-4
       user_data_format: RAW
   windows-5:
@@ -474,7 +516,7 @@ resources:
       name: GMIPS-5
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-5_port }
       image: GMIPS-5
       user_data_format: RAW
 ## HIDS not Registered  
@@ -495,7 +537,7 @@ resources:
       name: GMIPS-7
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-7_port }
       image: GMIPS-7
       user_data_format: RAW
   windows-8:
@@ -505,7 +547,7 @@ resources:
       name: GMIPS-8
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-8_port }
       image: GMIPS-8
       user_data_format: RAW
   windows-9:
@@ -515,7 +557,7 @@ resources:
       name: GMIPS-9
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-9_port }
       image: GMIPS-9
       user_data_format: RAW
   windows-10:
@@ -525,7 +567,7 @@ resources:
       name: GMIPS-10
       flavor: hack.c2.m8192.d64
       networks:
-        - network: { get_resource: green_net }
+        - port: { get_resource: GMIPS-10_port }
       image: GMIPS-10
       user_data_format: RAW
 ## 4.0 DMZ Resources
