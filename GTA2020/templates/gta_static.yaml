@@ -506,7 +506,7 @@ resources:
       name: GMIPS-4
       flavor: hack.c2.m8192.d64
       networks:
-        - port: { get_resource: GMIPS-4 }
+        - port: { get_resource: GMIPS-4_port }
       image: GMIPS-4
       user_data_format: RAW
   windows-5:
