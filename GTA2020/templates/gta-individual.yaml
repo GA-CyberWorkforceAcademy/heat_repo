@@ -164,7 +164,7 @@ resources:
         - port: { get_resource: white_gateway_port } #ens5
         - port: { get_resource: blue_gateway_port } #ens6
         - network: Public #ens7
-      image: so-gateway
+      image: individual-gateway
       user_data_format: RAW
 
   so_master:

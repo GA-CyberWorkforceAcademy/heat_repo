@@ -11,7 +11,7 @@ iface lo inet loopback
 auto ens3
 iface ens3 inet static
 address 207.255.255.254
-netmask 255.255.255.0
+netmask 248.0.0.0
 auto ens4
 iface ens4 inet static
 address 10.221.0.254
